@@ -20,7 +20,9 @@ git checkout file1.txt
 # Insights -> Network
 
 git remote add origin https://...
+
 git branch
+
 git push -u origin master 
 
 ## .gitignore 
