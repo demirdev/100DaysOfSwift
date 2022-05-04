@@ -34,7 +34,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YIb-0e-huY">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="ww" translatesAutoresizingMaskIntoConstraints="NO" id="YIb-0e-huY">
                                 <rect key="frame" x="63" y="370" width="289" height="267"/>
                             </imageView>
                         </subviews>
@@ -60,6 +60,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="ww" width="1000" height="667"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
