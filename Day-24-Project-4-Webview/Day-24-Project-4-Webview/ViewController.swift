@@ -11,7 +11,7 @@ import WebKit
 class ViewController: UIViewController, WKNavigationDelegate {
     var webview: WKWebView!
     var progressView: UIProgressView!
-    var websites = ["apple.com", "google.com"]
+    var initialAdress: String!
     
     override func loadView() {
         webview = WKWebView()
@@ -22,7 +22,10 @@ class ViewController: UIViewController, WKNavigationDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Open", style: .plain, target: self, action: #selector(openTapped))
+        let rightButton = UIBarButtonItem(title: "Open", style: .plain, target: self, action: #selector(openTapped))
+        let closeButton = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(close))
+        
+        navigationItem.rightBarButtonItems = [closeButton, rightButton]
         
         let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: webview, action: #selector(webview.reload))
@@ -36,9 +39,25 @@ class ViewController: UIViewController, WKNavigationDelegate {
         
         webview.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new,  context: nil)
         
-        let url = URL(string: "https://" + websites[0])!
+        let url = URL(string: "https://" + initialAdress)!
         webview.load(URLRequest(url:url))
         webview.allowsBackForwardNavigationGestures = true
+        
+//        navigationController?.setNavigationBarHidden(false, animated: true)
+        
+        addToolBarButtons()
+        
+    }
+    
+    @objc func close() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    func addToolBarButtons(){
+        let back = UIBarButtonItem(image: UIImage(systemName: "arrowshape.backward"), style: .plain, target: webview, action: #selector(webview.goBack))
+        
+        let forward = UIBarButtonItem(image: UIImage(systemName: "arrowshape.forward"), style: .plain, target: webview, action: #selector(webview.goForward))
+        navigationItem.leftBarButtonItems = [ back, forward ]
     }
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
@@ -54,6 +73,20 @@ class ViewController: UIViewController, WKNavigationDelegate {
         }
         
         decisionHandler(.cancel)
+        
+        showBlockedAlert(url?.host)
+        
+    }
+    
+    func showBlockedAlert(_ host: String?) {
+        if let host = host {
+            let ac = UIAlertController(title: "Can't visit site:", message: "\(host) is blocked", preferredStyle: .alert)
+            
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            
+                present(ac, animated: true)
+
+        }
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
