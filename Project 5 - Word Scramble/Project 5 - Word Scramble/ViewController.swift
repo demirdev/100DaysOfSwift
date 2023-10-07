@@ -18,6 +18,8 @@ class ViewController: UITableViewController {
         startGame()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(promptForAnswer))
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(startGame))
     }
     
    @objc func promptForAnswer() {
@@ -33,7 +35,24 @@ class ViewController: UITableViewController {
        present(ac, animated: true)
     }
 
+    fileprivate func precheckAnswerIsNotValid(_ answer: String) -> Bool {
+        return answer.isEmpty || answer.count < 3 || answer == title
+    }
+    
+    fileprivate func showErrorMessage(_ errorTitle: String, _ errorMessage: String) {
+        let ac = UIAlertController(title: errorTitle, message: errorMessage, preferredStyle: .alert)
+        
+        ac.addAction(UIAlertAction(title: "OK", style: .default))
+        
+        present(ac, animated: true)
+    }
+    
     func submit(_ answer: String) {
+        
+        if precheckAnswerIsNotValid(answer) {
+            return
+        }
+        
         let lowerAnswer = answer.lowercased()
         
         let errorTitle: String
@@ -61,11 +80,7 @@ class ViewController: UITableViewController {
             errorMessage = "You can't spell that word from (\(title!.lowercased()))."
         }
         
-        let ac = UIAlertController(title: errorTitle, message: errorMessage, preferredStyle: .alert)
-        
-        ac.addAction(UIAlertAction(title: "OK", style: .default))
-        
-        present(ac, animated: true)
+        showErrorMessage(errorTitle, errorMessage)
         
         
         
@@ -112,7 +127,7 @@ class ViewController: UITableViewController {
         }
     }
     
-    func startGame() {
+    @objc func startGame() {
         title = allWords.randomElement()
         usedWords.removeAll(keepingCapacity: true)
         tableView.reloadData()
